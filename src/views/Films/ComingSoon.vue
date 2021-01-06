@@ -1,8 +1,11 @@
 <template>
  <div>
-     <div>
-         <van-loading size="30px" class="loading" v-show="isLoading">加载中...</van-loading>
-     </div>
+      <van-list
+            v-model="isLoading"
+            :finished="finished"
+            finished-text="我是有底线的"
+            @load="onLoad"
+        >
   <van-card v-for="item in list" :key="item.filmId">
       <template #thumb>
           <img :src="item.poster" width="66">
@@ -15,32 +18,59 @@
       </template>
       <template #desc>
           <div class="desc">
-              <div>
-                  观众评分 <span class="grade"> {{item.grade}} </span>
-              </div>
               <div>主演：{{ item.actors | parseActors}} </div>
+              <div>
+                  上映时间：<span > {{item.premiereAt | parsePremiereAt}} </span>
+              </div>
               <div> {{item.nation}} | {{ item.runtime }} 分钟 </div>
               <div class="nowPlayingFilm-buy">预购</div>
           </div> 
       </template>
 </van-card>
+ </van-list>
  </div>
 </template>
 
 // <script>
 import uri from '@/config/uri'
 import Vue from 'vue';
-import { Card, Toast, Loading} from 'vant';
+import { Card, Toast, Loading,List} from 'vant';
 
 Vue.use(Card);
 Vue.use(Toast);
 Vue.use(Loading);
+Vue.use(List);
+import moment from 'moment'
 export default {
     data() {
         return {
             list:[],
-            isLoading:true
+            isLoading:false,
+            pageNum:1,
+            finished:false
         }
+    },
+    methods:{
+        onLoad(){
+            this.getData()
+        },
+        getData(){
+            this.$http.get(uri.getComingSoon + '?pageNum=' + this.pageNum)
+            .then(ret => {
+                if(ret.status == 0){
+                    if(this.pageNum <= Math.ceil(ret.data.total / 10)){
+                        this.list = [...this.list,...ret.data.films]
+                        this.pageNum++
+                    } else {
+                        this.finished = true
+                    }
+                } else {
+                    Toast.fail('网络繁忙')
+                }
+                this.isLoading = false
+            })
+        }
+    
     },
     filters:{
         parseActors(actors){
@@ -53,19 +83,26 @@ export default {
             } else {
                 return '暂无主演'
             }
+        },
+        parsePremiereAt(timestamp){
+            const arr = ['周日','周一','周二','周三','周四','周五','周六']
+            const week = arr[moment(timestamp * 1000).format('d')]
+            const day = moment (timestamp * 1000).format('D')
+            const month = moment(timestamp * 1000).format('M')
+            return `${week} ${month}月${day}日`
         }
     },
     created() {
-        this.$http.get(uri.getComingSoon).then((ret) =>{
-            if(ret.status === 0){
-                this.list = ret.data.films
-                console.log(this.list)
-            } else {
-                Toast.fail('网络繁忙')
-              }
-            this.isLoading = false
-        })
-    },
+        // this.$http.get(uri.getComingSoon).then((ret) =>{
+        //     if(ret.status === 0){
+        //         this.list = ret.data.films
+        //         console.log(this.list)
+        //     } else {
+        //         Toast.fail('网络繁忙')
+        //       }
+        //     this.isLoading = false
+        // })
+    }
 }
 </script>
 

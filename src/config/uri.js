@@ -6,4 +6,6 @@ export default {
     getNowPlaying: prefix + "/getNowPlayingFilmList",
 
     getComingSoon: prefix + "/getComingSoonFilmList",
+
+    getDetail: prefix + "/getFilmInfo",
 }

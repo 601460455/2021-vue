@@ -11,7 +11,7 @@ var film = [{
         ]
     },
     {
-        path: '/film/:flimId',
+        path: '/film/:filmId',
         component: Detail
     }
 ]

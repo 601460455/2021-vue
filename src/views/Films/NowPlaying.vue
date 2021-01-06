@@ -1,9 +1,14 @@
 <template>
- <div>
-     <div>
+ <div class="container"> 
+      <van-pull-refresh
+            v-model="isLoading2"
+            success-text="刷新成功"
+            @refresh="onRefresh"
+        >
+     <div class="loading" v-show="isLoading">
          <van-loading size="30px" class="loading" v-show="isLoading">加载中...</van-loading>
      </div>
-  <van-card v-for="item in list" :key="item.filmId">
+  <van-card v-for="item in list" :key="item.filmId" @click="goDetail(item.filmId)">
       <template #thumb>
           <img :src="item.poster" width="66">
       </template>
@@ -24,22 +29,51 @@
           </div> 
       </template>
 </van-card>
+</van-pull-refresh>
  </div>
 </template>
 
 // <script>
 import uri from '@/config/uri'
 import Vue from 'vue';
-import { Card, Toast, Loading} from 'vant';
+import { Card, Toast, Loading, PullRefresh} from 'vant';
 
 Vue.use(Card);
 Vue.use(Toast);
 Vue.use(Loading);
+Vue.use(PullRefresh);
 export default {
     data() {
         return {
             list:[],
-            isLoading:true
+            isLoading: true,
+            isLoading2: true,
+            pageNum: 1
+        }
+    },
+    methods:{
+        onRefresh() {
+            // 发起请求获取数据
+            this.getData();
+            console.log(11)
+        },
+        getData(){
+            this.$http.get(uri.getNowPlaying + '?pageNum=' + this.pageNum)
+            .then(ret => {
+                if(ret.status == 0){
+                    if(this.pageNum <= Math.ceil(ret.data.total / 10)){
+                        this.list = [...ret.data.films, ...this.list]
+                        this.pageNum++
+                    }
+                } else {
+                    Toast.fail('网络繁忙')
+                }
+                this.isLoading = false
+                this.isLoading2 = false
+            })
+        },
+        goDetail(filmId){
+            this.$router.push('/film/' + filmId)
         }
     },
     filters:{
@@ -56,15 +90,16 @@ export default {
         }
     },
     created() {
-        this.$http.get(uri.getNowPlaying).then((ret) =>{
-            if(ret.status === 0){
-                this.list = ret.data.films
-                console.log(this.list)
-            } else {
-                Toast.fail('网络繁忙')
-              }
-            this.isLoading = false
-        })
+        // this.$http.get(uri.getNowPlaying).then((ret) =>{
+        //     if(ret.status === 0){
+        //         this.list = ret.data.films
+        //         console.log(this.list)
+        //     } else {
+        //         Toast.fail('网络繁忙')
+        //       }
+        //     this.isLoading = false
+        // })
+        this.getData()
     },
 }
 </script>
@@ -75,7 +110,7 @@ export default {
         margin-top: 5px;
     }
 
-    img {
+img {
     border-radius: 0;
 }
 // 样式设置
@@ -124,5 +159,8 @@ export default {
 }
 .van-card__thumb{
     width: 68px; 
+}
+.container{
+    margin-bottom: 50px;
 }
 </style>
