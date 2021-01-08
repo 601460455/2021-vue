@@ -79,6 +79,7 @@
             class="margin-set my-balance"
             data-enter-time="1608645908"
             data-click-fun="track_f_475218"
+             @click="my_balence"
         >
             <img
                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAABmFBMVEVHcEz/sjL/sjL/sjL/tDT/tkj/sjL/sjL/sjL/sjL/tTX/szT/sjL/tDL/tDz/////sjL/sjL/tjz/uUX/xjj/tjP/szP/szL/uzP/sjL/sjL/szP/sjT/tjb/sjT/sjL/sjL/tDL/sjL/sjT/sjL/vz//sjL/szL/sjP/szL/tDX/sjP/vz//sjL/szP/tTL/sjP/sjP/vz//sjL/sjL/szP/szL/sjL/sjL/szP/szT/uTn/sjL/tDP/tjL/sjL/sjP/sjL/vDf/sjP/tTP/sjL/szL/uDT/sjT/tDf/uzX/sjL/szP/tzT/sjL/sjP/tDn/sjP/szP/szL/sjL/uTb/sjP/szP/sjP/tDL/sjL/szP/sjL/sjL/sjP/szP/sjL/szf/sjP/sjP/szL/sjL/szL/tjb/szP/sjP/sjL/zDP/sjL/szP/szb/sjL/sjP//1X/sjL/szL/sjL/sjP/sjL/szL/sjL/sjP/szL/szP/uDj/sjP/sjL/szL/tzP/sjL/ujr/szP/sjL/szP/sjP/sjKQA/lwAAAAh3RSTlMA7v6IUgfL+O2TJljzYBEB/PsVCwkjbMYP6fGvUyo/8tlW6k3iBOPK+qgwMgj0uUwouAzQ5Da8kvdeYhaJTzicluAXri3eeh1dKRPUwyfVCh8Upax+Icfhn2b9dqHa8H23JbRQnnTADtepugXYmy/PhgPWl+y99lvByHDrEubbbxn5GpXvX4UZrulbAAACJ0lEQVQYGXXBg2LrAAAF0Nt2SbPa1mxbb7Zt89k272+/pmu6JM3OQUH9Byt13r1tRZG5chp4E4Hee4Yj0Jn7yBnolVGsgk5VmDPQ+/KVW5vQ2NziZxeK1G8zZoeKPcbtBhhwrZM7fuS175DrLhjbIDMTyJnIkBu4x26MTVMB5ASmmhjbhRH/GhmfRsF0nFzzo8jKEh12aNgdXFqBjq2S84vQWZxnpQ0as1EuRFAkssDoLFR8k2xbhoHlNk76UCCEWROAoUANwwIUgxwdwz3GRjmIvC6P5wFyqp7XvUSO++kTP3IeeDxdyHF30IJb7lccQc4LVj7GLQs73JANsVNA3qnET8hy0vEMeUInhyATGUJB6udeBZCq3WtBQYg1yGqlJODOXzrqbRK/406jxFYAlzyA2j9Wf+NvqB3wEkAzE1DUSZJkYtYfSZLqoEiwDcANk1CcWWWkVXYGRZI3ANK8hpbJDK1rpgE42A4tkxla7XQAyPAUimCJrIklsiAUNmYAXDEFRTVVqqFI8QrABfehKCuVWVkqK4NinxcAzilCy2SGlshzAI1p2qBhMkPDxnQjsobZDA2TGRrNHIZsQGIf1ExmqPVRGkBOP3sroPLwEVQqetmPvB56nbiH08seFFjI7iQMJLtJC1Sc5fSOJwRoCIlxL8ud0HC9riWPTiz2hqBPEHzBBrvl5IisHXFBbzUkUkcMrcLQr5bjuHgYtVqjh2L8uOUHVP4D4AiVhBhUn0MAAAAASUVORK5CYII="
@@ -133,7 +134,24 @@ export default {
     methods:{
       gotoLogin(){
         this.$router.push('/login')
+      },
+      my_balence(){
+          this.$router.push('/balence');
       }
+    },
+    data(){
+        return{
+            userInfo:{}
+        }
+    },
+    created(){
+        let jwt = this.$store.state.global._token
+         if (jwt) {
+            // 发请求
+            this.$http
+                .get("http://127.0.0.1:2004/backend/get_user_info")
+                .then((ret) => (this.userInfo = ret.data));
+        }
     }
 };
 </script>
