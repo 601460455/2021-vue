@@ -12,13 +12,22 @@ import filmRouter from './routers/film'
 import centerRouter from './routers/center'
 import cinemasRouter from './routers/cinema'
 import nofoundRouter from './routers/nofound'
+import VuexCmp from '@/views/Films/Vuex'
+import City from '@/views/City/index'
 const routes = [{
         path: '/',
         redirect: '/films/nowPlaying'
     },
-
+    {
+        path: '/vuex',
+        component: VuexCmp
+    },
+    {
+        path: '/city',
+        component: City
+    },
     ...filmRouter,
-    centerRouter,
+    ...centerRouter,
     cinemasRouter,
     nofoundRouter
     // {
@@ -62,6 +71,26 @@ const router = new VueRouter({
     mode: 'history',
     base: process.env.BASE_URL,
     routes
+})
+import store from "@/store/index";
+router.beforeEach((to, from, next) => {
+    // console.log(to, from);//to.path
+    // 定义权限数组（可以模块化）
+    let quanxian = ["/balence", "/settings"];
+    // 获取jwt
+    let _token = store.state.global._token;
+    if (_token) {
+        next();
+    } else {
+        // 可能没登录
+        if (quanxian.includes(to.path)) {
+            // 登录(加上点功能，让用户登录完之后继续回到刚才想看的页面)
+            router.push({ path: "/login", query: { callback: to.path } });
+        } else {
+            // 不需要登录
+            next();
+        }
+    }
 })
 
 export default router

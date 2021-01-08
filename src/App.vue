@@ -1,7 +1,7 @@
 <template>
  <div id="app">
    
-   <Footer/>
+   <Footer v-show="isShow"></Footer>
    <router-view></router-view>
    </div> 
 </template>
@@ -17,6 +17,11 @@ export default {
 //   created() {
 //     this.$http.get(uri.getCities).then(ret => console.log(ret))
 //   },
+  computed:{
+  isShow(){
+    return this.$store.state.global.isShowFooter
+  }
+}
 }
 </script>
 <style lang="scss">
