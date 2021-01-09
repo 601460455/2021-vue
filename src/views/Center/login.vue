@@ -9,15 +9,15 @@
     name="mobile"
     label="手机号"
     placeholder="手机号"
-    :rules="[{ pattern, required: true, message: '请输入手机号' }]"
+    :rules="[{ pattern,  message: '请输入手机号' }]"
   />
   <van-field
     v-model="password"
     type="password"
-    name="验证码"
-    label="验证码"
-    placeholder="验证码"
-    :rules="[{ required: true, message: '请填写验证码' }]"
+    name="password"
+    label="密码"
+    placeholder="密码"
+    :rules="[{ required: true, message: '请填写密码' }]"
   />
   <div style="margin: 16px;">
     <van-button round block type="info" native-type="submit" class="button">登陆</van-button>
@@ -45,12 +45,12 @@ export default {
   },
   methods: {
     onSubmit(values) {
-      this.$http.post('http:http://127.0.0.1:2004/backend/login',values)
+      this.$http.post('http://127.0.0.1:2004/backend/login',values)
       .then((ret) => {
         if(ret.error_code == 0){
           Toast.success('登陆成功')
           if(this.$route.query.callback){
-            this.$router.push(this.$router.query.callback)
+            this.$router.push(this.$route.query.callback)
           } else {
             this.$router.push('/center')
           }

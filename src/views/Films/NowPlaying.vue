@@ -60,6 +60,7 @@ export default {
         getData(){
             this.$http.get(uri.getNowPlaying + '?pageNum=' + this.pageNum)
             .then(ret => {
+                console.log(ret)
                 if(ret.status == 0){
                     if(this.pageNum <= Math.ceil(ret.data.total / 10)){
                         this.list = [...ret.data.films, ...this.list]

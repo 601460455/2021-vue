@@ -21,7 +21,7 @@
     </div>
         <!-- 显示演员信息 -->
         <div>
-            <Actors :key="filmInfo.actors.length">
+            <Actors :key=" 'a'+ filmInfo.actors.length">
                 <div slot="mation" class="swiper-slide" v-for="(item, index) in filmInfo.actors" :key="index">
                     <img :src="item.avatarAddress" width="85" alt="">
                 </div>
@@ -29,7 +29,7 @@
         </div>
         <!-- 剧照 -->
         <div>
-            <Actors :key="filmInfo.photos.length">
+            <Actors :key=" 'b' + filmInfo.photos.length">
                 <div id="bigImg" slot="photo" class="swiper-slide" v-for="(item, index) in filmInfo.photos" :key="index" >
                     <img :src="item" height="100" alt="">
                 </div>
